@@ -1,0 +1,245 @@
+/* =========================================================
+   SMART WASTE COLLECTION REQUEST PORTAL - ECO DESIGN SYSTEM
+   ========================================================= */
+
+:root {
+  --primary-green: #10b981;
+  --primary-hover: #059669;
+  --secondary-green: #047857;
+  --accent-mint: #34d399;
+  --bg-light: #f8fafc;
+  --card-bg-light: #ffffff;
+  --text-main-light: #1e293b;
+  --text-muted-light: #64748b;
+  --border-light: #e2e8f0;
+  
+  --shadow-sm: 0 2px 8px rgba(16, 185, 129, 0.08);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(16, 185, 129, 0.15);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --transition-fast: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-bs-theme="dark"] {
+  --bg-light: #0f172a;
+  --card-bg-light: #1e293b;
+  --text-main-light: #f8fafc;
+  --text-muted-light: #94a3b8;
+  --border-light: #334155;
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+body {
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-main-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-fast);
+}
+
+/* Glassmorphism Header */
+.navbar-eco {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  transition: var(--transition-fast);
+}
+
+[data-bs-theme="dark"] .navbar-eco {
+  background: rgba(15, 23, 42, 0.88);
+}
+
+.brand-eco {
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: var(--primary-green) !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn-eco-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff !important;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  transition: var(--transition-fast);
+}
+
+.btn-eco-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45);
+  color: #ffffff !important;
+}
+
+.btn-eco-outline {
+  border: 2px solid var(--primary-green);
+  color: var(--primary-green) !important;
+  border-radius: var(--radius-md);
+  padding: 0.55rem 1.35rem;
+  font-weight: 600;
+  background: transparent;
+  transition: var(--transition-fast);
+}
+
+.btn-eco-outline:hover {
+  background: var(--primary-green);
+  color: #ffffff !important;
+}
+
+/* Rounded Eco Cards */
+.eco-card {
+  background: var(--card-bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-fast);
+  overflow: hidden;
+}
+
+.eco-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Stat Cards */
+.stat-card {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  border-left: 5px solid var(--primary-green);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--primary-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+
+/* Status Badges */
+.badge-status {
+  padding: 0.4rem 0.85rem;
+  border-radius: 50rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.badge-pending {
+  background: #fef3c7;
+  color: #d97706;
+}
+.badge-assigned {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+.badge-in-progress {
+  background: #dbeafe;
+  color: #2563eb;
+}
+.badge-completed {
+  background: #d1fae5;
+  color: #059669;
+}
+.badge-rejected {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+[data-bs-theme="dark"] .badge-pending { background: rgba(217, 119, 6, 0.2); color: #fbbf24; }
+[data-bs-theme="dark"] .badge-assigned { background: rgba(2, 132, 199, 0.2); color: #38bdf8; }
+[data-bs-theme="dark"] .badge-in-progress { background: rgba(37, 99, 235, 0.2); color: #60a5fa; }
+[data-bs-theme="dark"] .badge-completed { background: rgba(5, 150, 105, 0.2); color: #34d399; }
+[data-bs-theme="dark"] .badge-rejected { background: rgba(220, 38, 38, 0.2); color: #f87171; }
+
+/* Hero Banner */
+.hero-section {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(4, 120, 87, 0.12) 100%);
+  padding: 5rem 0 4rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.hero-highlight {
+  color: var(--primary-green);
+}
+
+/* Map Container */
+#map, .map-preview {
+  height: 340px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  z-index: 1;
+}
+
+/* Upload Image Dropzone */
+.image-upload-box {
+  border: 2px dashed var(--primary-green);
+  background: rgba(16, 185, 129, 0.04);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.image-upload-box:hover {
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.image-preview-thumb {
+  max-height: 180px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+}
+
+/* Footer */
+footer.eco-footer {
+  margin-top: auto;
+  background: var(--card-bg-light);
+  border-top: 1px solid var(--border-light);
+  padding: 2.5rem 0 1.5rem;
+}
+
+/* Dark Mode Switcher Floating Button */
+.theme-toggle-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg-light);
+  border: 1px solid var(--border-light);
+  color: var(--text-main-light);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  transform: rotate(20deg) scale(1.05);
+}

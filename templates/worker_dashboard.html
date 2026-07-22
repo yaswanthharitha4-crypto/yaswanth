@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% block title %}Worker Portal - Smart Waste Collection{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  
+  <!-- Header -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1"><i class="fa-solid fa-truck-ramp-box text-info me-2"></i> Sanitation Field Worker Portal</h2>
+      <p class="text-muted small mb-0">Logged in as: <strong>{{ session.get('user_name') }}</strong> (Field Operator)</p>
+    </div>
+    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-2 fw-bold">
+      <i class="fa-solid fa-hard-hat me-1"></i> Duty Status: Active
+    </span>
+  </div>
+
+  <!-- Worker Stats Summary -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-primary-subtle text-primary"><i class="fa-solid fa-clipboard-list"></i></div>
+        <div>
+          <h3 class="fw-bold mb-0">{{ stats.total_assigned }}</h3>
+          <span class="text-muted small fw-medium">Assigned Collection Tasks</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-info-subtle text-info"><i class="fa-solid fa-spinner"></i></div>
+        <div>
+          <h3 class="fw-bold mb-0 text-info">{{ stats.in_progress }}</h3>
+          <span class="text-muted small fw-medium">In Progress</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-success-subtle text-success"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+          <h3 class="fw-bold mb-0 text-success">{{ stats.completed }}</h3>
+          <span class="text-muted small fw-medium">Completed Cleanups</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter & Search Bar -->
+  <div class="eco-card p-3 mb-4">
+    <div class="row g-3">
+      <div class="col-md-8">
+        <div class="input-group">
+          <span class="input-group-text bg-body-tertiary"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+          <input type="text" id="tableSearchInput" class="form-control" placeholder="Search assigned tasks by location, category, citizen...">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <select id="tableStatusFilter" class="form-select">
+          <option value="all">All Assigned Tasks</option>
+          <option value="Assigned">Assigned</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasks List Grid -->
+  <div class="row g-4 mb-5">
+    {% if tasks %}
+      {% for t in tasks %}
+        <div class="col-md-6 report-item" data-status="{{ t.status }}" data-category="{{ t.waste_type }}">
+          <div class="eco-card p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="badge bg-secondary-subtle text-secondary fw-bold">Task #{{ t.id }}</span>
+                <span class="badge 
+                  {% if t.status == 'Assigned' %}badge-assigned
+                  {% elif t.status == 'In Progress' %}badge-in-progress
+                  {% elif t.status == 'Completed' %}badge-completed
+                  {% else %}badge-pending{% endif %}">
+                  {{ t.status }}
+                </span>
+              </div>
+
+              <h5 class="fw-bold mb-1">{{ t.waste_type }}</h5>
+              <p class="text-muted small mb-2"><i class="fa-solid fa-user me-1 text-primary"></i> Resident: {{ t.user_name }} ({{ t.user_phone or 'No phone' }})</p>
+              <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ t.address or 'Map location' }}</p>
+              
+              {% if t.description %}
+                <div class="p-2 rounded bg-body-tertiary border small mb-3">
+                  <i class="fa-solid fa-align-left me-1 text-muted"></i> "{{ t.description }}"
+                </div>
+              {% endif %}
+
+              {% if t.image_url %}
+                <div class="mb-3">
+                  <span class="small fw-semibold text-muted mb-1 d-block">Reported Photo:</span>
+                  <img src="{{ t.image_url }}" alt="Report Photo" class="img-fluid rounded-3 shadow-sm" style="max-height: 140px; width: 100%; object-fit: cover;">
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="pt-3 border-top d-flex align-items-center justify-content-between mt-3">
+              <small class="text-muted"><i class="fa-regular fa-clock me-1"></i> Logged: {{ t.created_at }}</small>
+
+              <button type="button" class="btn btn-eco-primary btn-sm rounded-pill px-3" 
+                      onclick="openWorkerUpdateModal({{ t.id }}, '{{ t.status }}', '{{ t.worker_notes or '' }}')">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Update Task Status
+              </button>
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div class="eco-card p-5 text-center">
+          <i class="fa-solid fa-clipboard-check fs-1 text-muted mb-3"></i>
+          <h5 class="fw-bold">No tasks assigned</h5>
+          <p class="text-muted small">You currently have no pending waste collection tasks assigned to your queue.</p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Worker Update Task Modal -->
+<div class="modal fade" id="workerUpdateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content eco-card">
+      <form id="workerUpdateForm" action="" method="POST" enctype="multipart/form-data">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-success"><i class="fa-solid fa-truck-ramp-box me-2"></i> Update Collection Task</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="updateStatus" class="form-label fw-semibold">Task Status</label>
+            <select class="form-select" id="updateStatus" name="status" required>
+              <option value="Assigned">Assigned (Received)</option>
+              <option value="In Progress">In Progress (En Route / Cleaning)</option>
+              <option value="Completed">Completed (Cleaned & Disposed)</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="before_image" class="form-label fw-semibold">Upload "Before Cleanup" Photo</label>
+            <input type="file" class="form-control" id="before_image" name="before_image" accept="image/*">
+          </div>
+
+          <div class="mb-3">
+            <label for="after_image" class="form-label fw-semibold">Upload "After Cleanup" Proof Photo</label>
+            <input type="file" class="form-control" id="after_image" name="after_image" accept="image/*">
+          </div>
+
+          <div class="mb-3">
+            <label for="workerNotes" class="form-label fw-semibold">Worker Remarks / Resolution Notes</label>
+            <textarea class="form-control" id="workerNotes" name="notes" rows="3" placeholder="e.g. Area swept and 50kg organic waste transferred to processing unit."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-0">
+          <button type="button" class="btn btn-light border" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-eco-primary px-4 rounded-pill">
+            <i class="fa-solid fa-floppy-disk me-1"></i> Save Task Updates
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function openWorkerUpdateModal(taskId, currentStatus, currentNotes) {
+  const form = document.getElementById('workerUpdateForm');
+  form.action = `/api/reports/${taskId}/status`;
+  
+  const statusSelect = document.getElementById('updateStatus');
+  if (statusSelect) statusSelect.value = currentStatus;
+
+  const notesTextarea = document.getElementById('workerNotes');
+  if (notesTextarea) notesTextarea.value = currentNotes;
+
+  const modalEl = document.getElementById('workerUpdateModal');
+  if (modalEl) {
+    const bsModal = new bootstrap.Modal(modalEl);
+    bsModal.show();
+  }
+}
+</script>
+{% endblock %}

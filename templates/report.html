@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Report Waste Collection - Smart Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h2 class="fw-bold mb-1"><i class="fa-solid fa-bullhorn text-success me-2"></i> File Waste Collection Request</h2>
+          <p class="text-muted small mb-0">Fill out details, upload a photo, and set GPS pin for municipal field workers.</p>
+        </div>
+        <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary btn-sm rounded-pill">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+      </div>
+
+      <div class="eco-card p-4 p-sm-5">
+        <form action="{{ url_for('report_waste') }}" method="POST" enctype="multipart/form-data">
+          <div class="row g-4">
+            
+            <!-- Left Column: Waste Details -->
+            <div class="col-md-6">
+              <h5 class="fw-bold text-success mb-3"><i class="fa-solid fa-clipboard-list me-2"></i> 1. Waste Details</h5>
+
+              <div class="mb-3">
+                <label for="waste_type" class="form-label fw-semibold">Waste Type Category <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text bg-body-tertiary"><i class="fa-solid fa-tags text-muted"></i></span>
+                  <select class="form-select" id="waste_type" name="waste_type" required>
+                    <option value="" selected disabled>-- Select Waste Category --</option>
+                    <option value="Organic Waste">Organic / Wet Waste (Food, Garden Scraps)</option>
+                    <option value="Recyclable Plastic">Recyclable Plastic & Packaging</option>
+                    <option value="Paper & Cardboard">Paper, Cardboard & Dry Waste</option>
+                    <option value="E-Waste">E-Waste & Electronics (Batteries, Cables)</option>
+                    <option value="Hazardous Waste">Hazardous Chemicals & Paints</option>
+                    <option value="Construction Debris">Construction & Bulky Rubble</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="phone" class="form-label fw-semibold">Contact Phone Number</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-body-tertiary"><i class="fa-solid fa-phone text-muted"></i></span>
+                  <input type="tel" class="form-control" id="phone" name="phone" placeholder="+1-555-0144" value="{{ session.get('phone', '') }}">
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label fw-semibold">Problem Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3" placeholder="Describe waste quantity, landmark, or urgency (e.g. Bin overflowing near market gate)"></textarea>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label fw-semibold">Upload Waste Photo</label>
+                <div class="image-upload-box" onclick="document.getElementById('image').click()">
+                  <i class="fa-solid fa-cloud-arrow-up fs-2 text-success mb-2"></i>
+                  <p class="fw-semibold mb-1">Click or Drag Image Here</p>
+                  <small class="text-muted">Supports PNG, JPG, JPEG, WEBP (Max 16MB)</small>
+                  <input type="file" class="d-none" id="image" name="image" accept="image/*">
+                </div>
+                <div id="image-preview" class="mt-2 text-center"></div>
+              </div>
+            </div>
+
+            <!-- Right Column: Location & GPS Map -->
+            <div class="col-md-6">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-success mb-0"><i class="fa-solid fa-map-location-dot me-2"></i> 2. Location & Map</h5>
+                <button type="button" class="btn btn-sm btn-eco-outline rounded-pill" id="btn-detect-gps">
+                  <i class="fa-solid fa-location-crosshairs me-1"></i> Auto-Detect GPS Location
+                </button>
+              </div>
+
+              <div class="mb-3">
+                <label for="address" class="form-label fw-semibold">Street Address / Landmark</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-body-tertiary"><i class="fa-solid fa-location-dot text-muted"></i></span>
+                  <input type="text" class="form-control" id="address" name="address" placeholder="Detected or manually typed address" required>
+                </div>
+              </div>
+
+              <div class="row g-2 mb-3">
+                <div class="col-6">
+                  <label class="form-label small fw-semibold text-muted mb-1">Latitude</label>
+                  <input type="text" class="form-control form-control-sm bg-body-tertiary" id="latitude" name="latitude" value="28.6139" readonly>
+                </div>
+                <div class="col-6">
+                  <label class="form-label small fw-semibold text-muted mb-1">Longitude</label>
+                  <input type="text" class="form-control form-control-sm bg-body-tertiary" id="longitude" name="longitude" value="77.2090" readonly>
+                </div>
+              </div>
+
+              <!-- Interactive Map Picker -->
+              <div id="map" class="mb-3 shadow-sm border rounded-3"></div>
+              <small class="text-muted"><i class="fa-solid fa-circle-info me-1"></i> Drag pin on map or click anywhere to refine location.</small>
+            </div>
+
+          </div>
+
+          <hr class="my-4">
+
+          <div class="d-flex justify-content-end gap-3">
+            <a href="{{ url_for('user_dashboard') }}" class="btn btn-light border px-4">Cancel</a>
+            <button type="submit" class="btn btn-eco-primary btn-lg px-5 rounded-pill shadow">
+              <i class="fa-solid fa-paper-plane me-2"></i> Submit Waste Report
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

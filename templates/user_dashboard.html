@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% block title %}User Dashboard - Smart Waste Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  
+  <!-- Dashboard Header -->
+  <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1"><i class="fa-solid fa-clipboard-user text-success me-2"></i> Citizen Dashboard</h2>
+      <p class="text-muted small mb-0">Welcome back, <strong>{{ session.get('user_name') }}</strong>. Track your filed collection requests.</p>
+    </div>
+    <a href="{{ url_for('report_waste') }}" class="btn btn-eco-primary rounded-pill shadow-sm">
+      <i class="fa-solid fa-plus me-1"></i> New Waste Report
+    </a>
+  </div>
+
+  <!-- Summary Statistics Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-success-subtle text-success"><i class="fa-solid fa-folder-open"></i></div>
+        <div>
+          <h4 class="fw-bold mb-0">{{ stats.total }}</h4>
+          <span class="text-muted small">Total Filed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-warning-subtle text-warning"><i class="fa-solid fa-clock"></i></div>
+        <div>
+          <h4 class="fw-bold mb-0 text-warning">{{ stats.pending }}</h4>
+          <span class="text-muted small">Pending Action</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-info-subtle text-info"><i class="fa-solid fa-spinner"></i></div>
+        <div>
+          <h4 class="fw-bold mb-0 text-info">{{ stats.in_progress }}</h4>
+          <span class="text-muted small">In Progress</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <div class="eco-card p-3 d-flex align-items-center gap-3">
+        <div class="stat-icon bg-success-subtle text-success"><i class="fa-solid fa-circle-check"></i></div>
+        <div>
+          <h4 class="fw-bold mb-0 text-success">{{ stats.completed }}</h4>
+          <span class="text-muted small">Resolved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="eco-card p-3 mb-4">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="input-group">
+          <span class="input-group-text bg-body-tertiary"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+          <input type="text" id="tableSearchInput" class="form-control" placeholder="Search by address, ID, or waste category...">
+        </div>
+      </div>
+      <div class="col-md-3 col-6">
+        <select id="tableStatusFilter" class="form-select">
+          <option value="all">All Statuses</option>
+          <option value="Pending">Pending</option>
+          <option value="Assigned">Assigned</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div class="col-md-3 col-6">
+        <select id="tableCategoryFilter" class="form-select">
+          <option value="all">All Categories</option>
+          <option value="Organic Waste">Organic Waste</option>
+          <option value="Recyclable Plastic">Recyclable Plastic</option>
+          <option value="E-Waste">E-Waste</option>
+          <option value="Hazardous Waste">Hazardous Waste</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reports List Cards -->
+  <div class="row g-4 mb-5" id="reportsContainer">
+    {% if reports %}
+      {% for rep in reports %}
+        <div class="col-12 report-item" data-status="{{ rep.status }}" data-category="{{ rep.waste_type }}">
+          <div class="eco-card p-4">
+            <div class="row align-items-center g-3">
+              
+              <!-- Report Image & Badge -->
+              <div class="col-md-2 text-center">
+                {% if rep.image_url %}
+                  <img src="{{ rep.image_url }}" alt="Waste Photo" class="img-fluid rounded-3 shadow-sm" style="height: 90px; width: 100%; object-fit: cover;">
+                {% else %}
+                  <div class="bg-body-tertiary rounded-3 p-3 text-muted border text-center">
+                    <i class="fa-solid fa-image fs-3"></i>
+                  </div>
+                {% endif %}
+              </div>
+
+              <!-- Report Info -->
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge bg-secondary-subtle text-secondary fw-bold">Report #{{ rep.id }}</span>
+                  <span class="badge 
+                    {% if rep.status == 'Pending' %}badge-pending
+                    {% elif rep.status == 'Assigned' %}badge-assigned
+                    {% elif rep.status == 'In Progress' %}badge-in-progress
+                    {% elif rep.status == 'Completed' %}badge-completed
+                    {% else %}badge-rejected{% endif %}">
+                    <i class="fa-solid fa-circle me-1" style="font-size: 0.5rem;"></i> {{ rep.status }}
+                  </span>
+                </div>
+                <h5 class="fw-bold mb-1">{{ rep.waste_type }}</h5>
+                <p class="text-muted small mb-1"><i class="fa-solid fa-location-dot text-danger me-1"></i> {{ rep.address or 'Address not specified' }}</p>
+                <p class="text-muted small mb-0"><i class="fa-regular fa-clock me-1"></i> Logged: {{ rep.created_at }}</p>
+                {% if rep.worker_name %}
+                  <small class="text-success fw-semibold"><i class="fa-solid fa-user-check me-1"></i> Worker: {{ rep.worker_name }}</small>
+                {% endif %}
+              </div>
+
+              <!-- Timeline & Proof Button -->
+              <div class="col-md-4 text-md-end">
+                <!-- Status Timeline Bar -->
+                <div class="progress mb-2" style="height: 8px;">
+                  <div class="progress-bar bg-success" role="progressbar" 
+                       style="width: {% if rep.status == 'Pending' %}25%{% elif rep.status == 'Assigned' %}50%{% elif rep.status == 'In Progress' %}75%{% elif rep.status == 'Completed' %}100%{% else %}0%{% endif %};">
+                  </div>
+                </div>
+                <small class="text-muted d-block mb-3">Status: <strong>{{ rep.status }}</strong></small>
+
+                {% if rep.status == 'Completed' or rep.after_image %}
+                  <button type="button" class="btn btn-sm btn-outline-success rounded-pill" 
+                          onclick="openProofModal('{{ rep.before_image or rep.image_url }}', '{{ rep.after_image }}', '{{ rep.worker_notes or '' }}')">
+                    <i class="fa-solid fa-images me-1"></i> View Before & After Proof
+                  </button>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12">
+        <div class="eco-card p-5 text-center">
+          <i class="fa-solid fa-box-open fs-1 text-muted mb-3"></i>
+          <h5 class="fw-bold">No waste reports found</h5>
+          <p class="text-muted small">You haven't submitted any waste collection requests yet.</p>
+          <a href="{{ url_for('report_waste') }}" class="btn btn-eco-primary rounded-pill">File Your First Request</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Proof Viewer Modal -->
+<div class="modal fade" id="proofModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content eco-card">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title fw-bold text-success"><i class="fa-solid fa-circle-check me-2"></i> Cleanup Verification Proof</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3 text-center">
+          <div class="col-md-6">
+            <div class="p-2 border rounded-3 bg-body-tertiary">
+              <h6 class="fw-bold text-muted mb-2"><i class="fa-solid fa-camera me-1"></i> Before Cleanup</h6>
+              <img id="modalBeforeImg" src="" class="img-fluid rounded-3 shadow-sm style-preview" style="max-height:220px; object-fit:cover;" alt="Before Photo">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-2 border rounded-3 bg-body-tertiary">
+              <h6 class="fw-bold text-success mb-2"><i class="fa-solid fa-sparkles me-1"></i> After Cleanup Proof</h6>
+              <img id="modalAfterImg" src="" class="img-fluid rounded-3 shadow-sm style-preview" style="max-height:220px; object-fit:cover;" alt="After Photo">
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 p-3 bg-body-tertiary rounded-3 border">
+          <h6 class="fw-bold mb-1"><i class="fa-solid fa-comment-dots text-primary me-1"></i> Worker Notes</h6>
+          <p id="modalNotes" class="text-muted small mb-0">No notes provided.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

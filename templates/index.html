@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+
+{% block title %}Smart Waste Collection Request Portal - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section text-center text-lg-start position-relative">
+  <div class="container">
+    <div class="row align-items-center g-5 py-4">
+      <div class="col-lg-7">
+        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fw-semibold mb-3">
+          <i class="fa-solid fa-seedling me-1"></i> Smart City Environmental Initiative
+        </span>
+        <h1 class="hero-title mb-3">
+          Report Waste, <br><span class="hero-highlight">Clean Our City Together.</span>
+        </h1>
+        <p class="lead text-muted mb-4">
+          Instantly report overflowing bins, uncollected trash, or hazardous waste using auto GPS location and photo uploads. Track cleanup progress in real-time.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+          <a href="{{ url_for('report_waste') }}" class="btn btn-eco-primary btn-lg rounded-pill px-4 shadow">
+            <i class="fa-solid fa-camera me-2"></i> Report Waste Now
+          </a>
+          <a href="{{ url_for('login') }}" class="btn btn-eco-outline btn-lg rounded-pill px-4">
+            <i class="fa-solid fa-right-to-bracket me-2"></i> Portal Login
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="position-relative">
+          <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=700&q=80" 
+               alt="Smart City Cleanliness" class="img-fluid rounded-4 shadow-lg border border-3 border-white">
+          <div class="position-absolute bottom-0 start-0 translate-middle-y bg-white text-dark p-3 rounded-3 shadow border ms-3 d-none d-sm-block">
+            <div class="d-flex align-items-center gap-3">
+              <div class="stat-icon bg-success text-white">
+                <i class="fa-solid fa-check-double"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold mb-0 text-success">Quick Cleanup</h6>
+                <small class="text-muted">Average 24h response time</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Live Statistics Counter Row -->
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6">
+        <div class="eco-card stat-card">
+          <div class="stat-icon">
+            <i class="fa-solid fa-dumpster"></i>
+          </div>
+          <div>
+            <h3 class="fw-bold mb-0 text-success">{{ stats.total }}</h3>
+            <span class="text-muted small fw-medium">Total Complaints Logged</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="eco-card stat-card" style="border-left-color: #059669;">
+          <div class="stat-icon" style="background: rgba(5, 150, 105, 0.12); color: #059669;">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <div>
+            <h3 class="fw-bold mb-0 text-success">{{ stats.completed }}</h3>
+            <span class="text-muted small fw-medium">Resolved Cleanups</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="eco-card stat-card" style="border-left-color: #d97706;">
+          <div class="stat-icon" style="background: rgba(217, 119, 6, 0.12); color: #d97706;">
+            <i class="fa-solid fa-hourglass-half"></i>
+          </div>
+          <div>
+            <h3 class="fw-bold mb-0 text-warning">{{ stats.pending }}</h3>
+            <span class="text-muted small fw-medium">Pending Action</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3 col-sm-6">
+        <div class="eco-card stat-card" style="border-left-color: #0284c7;">
+          <div class="stat-icon" style="background: rgba(2, 132, 199, 0.12); color: #0284c7;">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <div>
+            <h3 class="fw-bold mb-0 text-info">{{ stats.workers }}</h3>
+            <span class="text-muted small fw-medium">Active Field Workers</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-body-tertiary">
+  <div class="container">
+    <div class="text-center max-width-600 mx-auto mb-5">
+      <h2 class="fw-bold">How the Smart Portal Works</h2>
+      <p class="text-muted">Simple 4-step process connecting residents directly to municipal field teams.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="eco-card h-100 p-4 text-center">
+          <div class="stat-icon mx-auto mb-3">
+            <i class="fa-solid fa-camera-retro"></i>
+          </div>
+          <h5 class="fw-bold">1. Snap Photo</h5>
+          <p class="text-muted small mb-0">Take a photo of the uncollected waste or overflowing garbage bin.</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="eco-card h-100 p-4 text-center">
+          <div class="stat-icon mx-auto mb-3">
+            <i class="fa-solid fa-location-crosshairs"></i>
+          </div>
+          <h5 class="fw-bold">2. Auto GPS Pin</h5>
+          <p class="text-muted small mb-0">Use one-click GPS detection or select the location on the interactive map.</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="eco-card h-100 p-4 text-center">
+          <div class="stat-icon mx-auto mb-3">
+            <i class="fa-solid fa-truck-dispatch"></i>
+          </div>
+          <h5 class="fw-bold">3. Worker Dispatch</h5>
+          <p class="text-muted small mb-0">Smart Admin portal assigns the report to the nearest sanitation team worker.</p>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="eco-card h-100 p-4 text-center">
+          <div class="stat-icon mx-auto mb-3">
+            <i class="fa-solid fa-images"></i>
+          </div>
+          <h5 class="fw-bold">4. Proof Verified</h5>
+          <p class="text-muted small mb-0">Field workers upload before and after proof photos once cleanup is completed.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Waste Categories Section -->
+<section class="py-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h3 class="fw-bold mb-1">Supported Waste Types</h3>
+        <p class="text-muted small mb-0">Select appropriate categories when filing collection requests.</p>
+      </div>
+      <a href="{{ url_for('report_waste') }}" class="btn btn-eco-primary btn-sm rounded-pill">
+        File Request <i class="fa-solid fa-arrow-right ms-1"></i>
+      </a>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-success"><i class="fa-solid fa-apple-whole"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">Organic & Wet Waste</h6>
+            <small class="text-muted">Food scraps, market waste, green garden foliage</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-primary"><i class="fa-solid fa-recycle"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">Recyclable Plastic & Paper</h6>
+            <small class="text-muted">Plastic bottles, cardboard, tin cans, glass</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-warning"><i class="fa-solid fa-plug"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">E-Waste & Electronics</h6>
+            <small class="text-muted">Old appliances, cables, batteries, broken monitors</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-danger"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">Hazardous Waste</h6>
+            <small class="text-muted">Chemicals, paint cans, medical waste items</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-secondary"><i class="fa-solid fa-trowel-bricks"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">Construction & Bulky</h6>
+            <small class="text-muted">Debris, broken bricks, old furniture</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4 col-sm-6">
+        <div class="eco-card p-3 d-flex align-items-center gap-3">
+          <div class="fs-2 text-info"><i class="fa-solid fa-circle-question"></i></div>
+          <div>
+            <h6 class="fw-bold mb-0">General Litter</h6>
+            <small class="text-muted">Roadside trash accumulation, unmaintained spots</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
